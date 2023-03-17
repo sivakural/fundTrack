@@ -7,6 +7,7 @@ const { User, validateUser, validateLoginUser } = require('./model/user');
 
 const mongoConnect = async function () {
     try {
+        // await mongoose.connect("mongodb+srv://siva:Mongodb%4025@cluster0.h6gvicl.mongodb.net/userEntry?retryWrites=true&w=majority")
         await mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.h6gvicl.mongodb.net/userEntry?retryWrites=true&w=majority`)
         console.log('User database connected...')
     } catch (error) {

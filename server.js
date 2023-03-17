@@ -10,7 +10,7 @@ const mongoConnect = async function () {
         await mongoose.connect("mongodb+srv://siva:Mongodb%4025@cluster0.h6gvicl.mongodb.net/userEntry?retryWrites=true&w=majority")
         console.log('User database connected...')
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }
 

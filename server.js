@@ -60,13 +60,13 @@ app.post('/login', async (req, res) => {
                 const token = jwt.sign({ _id: user.email }, "SecureAF");
                 return res.setHeader("Access-Control-Expose-Headers", "Authorization").header('Authorization', token).status(200).end();
             } else {
-                return res.status(400).json('User cannot exist..').end();
+                return res.status(400).json('Password does not match..').end();
             }
         } else {
             return res.status(400).json('User cannot exist..').end();
         }
     } catch (error) {
-        return res.status(400).json('User cannot exist..').end();
+        return res.status(400).json('Server error...').end();
     }
 });
 

@@ -27,7 +27,7 @@ async function handleCommon(req) {
         default:
             // get auth and set id to relation record
             const userId = getId(req);
-            result = await db.collection("entry").find({user: userId._id}).sort({ date: -1 }).toArray();
+            result = await db.collection("entry").find({ user: userId._id }).sort({ date: -1 }).toArray();
             break;
     }
     return result;
@@ -35,22 +35,55 @@ async function handleCommon(req) {
 
 async function handleDataFlow(getQuries, result, req) {
     for (let i = 0; i < getQuries.length; i++) {
-        let saveRecord;
         // get auth and set id to relation record
         const userId = getId(req);
         if (!userId) return result;
-        let record = await db.collection("entry").find({ date: { $gte: getQuries[i].startDate, $lte: getQuries[i].endDate }, user: userId._id }).toArray();
-        if (record.length) {
-            for (let j = 0; j < record.length; j++) {
-                if (!saveRecord) {
-                    saveRecord = record[j];
-                    continue;
-                } else {
-                    let getResult = handleThings(record[j], saveRecord);
-                    saveRecord = getResult;
+        let record = await db.collection("entry").aggregate([
+            {
+                $match: {
+                    $and: [
+                        {
+                            date: { $gte: getQuries[i].startDate, $lte: getQuries[i].endDate }
+                        },
+                        {
+                            user: userId._id
+                        }
+                    ]
+                }
+            },
+            { $unwind: "$things" },
+            {
+                $group: {
+                    _id: "$things.categorey",
+                    date: { $first: "$date" },
+                    total: { $sum: "$things.categorey_value" },
+                    subcategories: { $push: "$things.subcategories" }
+                }
+            },
+            {
+                $project: {
+                    categorey: "$_id",
+                    categorey_value: "$total",
+                    subcategories: {
+                        $reduce: {
+                            input: "$subcategories",
+                            initialValue: [],
+                            in: {
+                                $concatArrays: ["$$value", "$$this"]
+                            }
+                        }
+                    }
                 }
             }
-            result.push(saveRecord);
+        ]).toArray();
+        if (record.length) {
+            let obj = {
+                date: getQuries[i].endDate,
+                user: userId._id,
+                things: []
+            }
+            obj.things = record;
+            result.push(obj);
         }
     }
 }

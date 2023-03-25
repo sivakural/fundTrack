@@ -60,5 +60,4 @@ app.post('/getentry', async (req, res) => {
     res.status(200).send(result).end();
 });
 
-
 module.exports = app;

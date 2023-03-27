@@ -13,7 +13,7 @@ const db1 = createConnection(`mongodb+srv://${process.env.MONGO_USER}:${process.
 const User = db1.model("User", UserModel);
 console.log('User database connected...')
 // const db2 = createConnection("mongodb+srv://siva:Mongodb%4025@cluster0.h6gvicl.mongodb.net/creditCard?retryWrites=true&w=majority");
-const db2 = createConnection(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.h6gvicl.mongodb.net/userEntry?retryWrites=true&w=majority`);
+const db2 = createConnection(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.h6gvicl.mongodb.net/creditCard?retryWrites=true&w=majority`);
 const CreditCardPay = db2.model("CreditCardPay", CreditCardPayModel);
 const CreditCardUse = db2.model("CreditCardUse", CreditCardUseModel);
 console.log('Creditcard database connected...');

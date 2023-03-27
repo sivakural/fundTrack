@@ -18,7 +18,6 @@ app.use(express.static(process.cwd() + '/fund-track'));
 mongoConnect();
 
 app.get('/', (req, res) => {
-    console.log("address:", req.hostname)
     res.sendFile(process.cwd() + '/fund-track/index.html');
 });
 

@@ -10,7 +10,7 @@ async function handleCommon(req) {
     let getQuries = [];
     switch (query.type) {
         case "week":
-            getQuries = getWeek();
+            getQuries = getWeek(query.month, query.year);
             await handleDataFlow(getQuries, result, req);
             getQuries = [];
             break;
@@ -27,7 +27,41 @@ async function handleCommon(req) {
         default:
             // get auth and set id to relation record
             const userId = getId(req);
-            result = await db.collection("entry").find({ user: userId._id }).sort({ date: -1 }).toArray();
+            result = await db.collection("entry").aggregate([
+                {
+                    $addFields: {
+                        convertDate: {
+                            $dateFromString: {
+                                dateString: "$date",
+                                format: "%Y-%m-%d"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        user: 1,
+                        things: 1,
+                        date: {
+                            $dateFromString: {
+                                dateString: "$date",
+                                format: "%Y-%m-%d"
+                            }
+                        },
+                        month: {
+                            $month: "$convertDate"
+                        }
+                    }
+                },
+                {
+                    $match: {
+                        $and: [
+                            { month: parseInt(query.month) },
+                            { user: userId._id }
+                        ]
+                    }
+                }
+            ]).sort({ date: -1 }).toArray();
             break;
     }
     return result;

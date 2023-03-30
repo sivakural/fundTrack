@@ -1,6 +1,6 @@
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const year = ["2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"];
+const year = ["2023", "2024", "2025"];
 
 function handleThings(dbResult, inputs) {
     // store result arrary into temp
@@ -57,36 +57,32 @@ function handleThings(dbResult, inputs) {
     return inputs;
 }
 
-function getWeek() {
+function getWeek(month, y) {
     let setQueries = [];
-    let year = "2023";
-    for (let j = 0; j < month.length; j++) {
-        if (j == (new Date().getMonth() + 1)) break;
-        let days = new Date(year, j + 1, 0).getDate();
-        let month_temp = j + 1;
-        if (month_temp <= 9) {
-            month_temp = "0" + month_temp;
-        }
+    let days = new Date(year[y], month, 0).getDate();
+    let month_temp = month;
+    if (month_temp <= 9) {
+        month_temp = "0" + month_temp;
+    }
 
-        for (let i = 0; i < days; i++) {
-            let day = i + 1;
-            if (day <= 9) {
-                day = "0" + day;
-            }
-            day = `${year}-${month_temp}-${day}`;
-            let date = new Date(day.toString());
-            if (((i + 1) == 1) || (date.getDay() == 0)) {
-                setQueries.push({ startDate: day });
-            }
-            if (((i + 1) == days) || (date.getDay() == 6)) {
-                setQueries[setQueries.length - 1]['endDate'] = day;
-            }
-            if ((new Date().getFullYear() == date.getFullYear()) &&
-                (new Date().getMonth() == date.getMonth()) &&
-                (new Date().getDate() == date.getDate())) {
-                setQueries[setQueries.length - 1]['endDate'] = day;
-                break;
-            }
+    for (let i = 0; i < days; i++) {
+        let day = i + 1;
+        if (day <= 9) {
+            day = "0" + day;
+        }
+        day = `${year[y]}-${month_temp}-${day}`;
+        let date = new Date(day.toString());
+        if (((i + 1) == 1) || (date.getDay() == 0)) {
+            setQueries.push({ startDate: day });
+        }
+        if (((i + 1) == days) || (date.getDay() == 6)) {
+            setQueries[setQueries.length - 1]['endDate'] = day;
+        }
+        if ((new Date().getFullYear() == date.getFullYear()) &&
+            (new Date().getMonth() == date.getMonth()) &&
+            (new Date().getDate() == date.getDate())) {
+            setQueries[setQueries.length - 1]['endDate'] = day;
+            break;
         }
     }
     return setQueries;

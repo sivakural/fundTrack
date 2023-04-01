@@ -121,13 +121,14 @@ function getMonth() {
 
 function getYear() {
     let setQueries = [];
-    year.forEach(val => {
+    let yr = year[0];
+    // year.forEach(val => {
         let data = { startDate: null, endDate: null };
-        data.startDate = `${val}-01-${new Date(val, '01', 1).getDate()}`;
-        data.endDate = `${val}-12-${new Date(val, '12', 0).getDate()}`;
+        data.startDate = `${yr}-01-${new Date(yr, '01', 1).getDate()}`;
+        data.endDate = `${yr}-12-${new Date(yr, '12', 0).getDate()}`;
         setQueries.push({ ...data });
         data = { startDate: null, endDate: null };
-    });
+    // });
     return setQueries;
 }
 

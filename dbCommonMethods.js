@@ -1,6 +1,6 @@
 const { client } = require('./databaseConnector');
 const db = client.db("fundTrack");
-const { getWeek, getMonth, getYear, handleThings } = require('./utils');
+const { getWeek, getMonth, getYear } = require('./utils');
 const jwt = require('jsonwebtoken');
 
 async function handleCommon(req) {

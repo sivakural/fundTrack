@@ -4,7 +4,7 @@ const app = Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { UserModel, validateUser, validateLoginUser } = require('./model/user');
-const { CreditCardPayModel, CreditCardUseModel, validateCreditcard } = require('./model/creditcard');
+const { CreditCardPayModel, CreditCardUseModel, validateCreditcardPay, validateCreditcardUse } = require('./model/creditcard');
 const { getId } = require('./dbCommonMethods');
 
 // Database connections
@@ -73,7 +73,7 @@ app.post('/login', async (req, res) => {
 // Handle Credit card section records
 app.post('/creditcarduse', async (req, res) => {
     // First validate the req
-    const { error } = validateCreditcard(req.body);
+    const { error } = validateCreditcardUse(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
@@ -86,15 +86,34 @@ app.post('/creditcarduse', async (req, res) => {
     const creditCard = new CreditCardUse({
         date: new Date(req.body.date),
         amount: req.body.amount,
-        user: req.body.user
+        user: req.body.user,
+        reason: req.body.reason
     });
     await creditCard.save();
     return res.status(200).end();
 });
 
+app.put('/creditcarduseupdate', async (req, res) => {
+    // First validate the req
+    const { error } = validateCreditcardUse(req.body);
+    if (error) {
+        return res.status(400).send(error.details[0].message);
+    }
+
+    // get auth and set id to relation record
+    const userId = getId(req);
+    if (!userId) return res.status(401).send("Unauthorized...");
+    req.body.user ? "" : req.body.user = userId._id;
+
+    let result = await CreditCardUse.findOneAndUpdate(
+        { date: req.body.date, user: req.body.user, reason: req.body.reason },
+        { $set: req.body });
+    return res.status(200).send(result).end();
+});
+
 app.post('/creditcardpay', async (req, res) => {
     // First validate the req
-    const { error } = validateCreditcard(req.body);
+    const { error } = validateCreditcardPay(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
@@ -107,7 +126,8 @@ app.post('/creditcardpay', async (req, res) => {
     const creditCard = new CreditCardPay({
         date: new Date(req.body.date),
         amount: req.body.amount,
-        user: req.body.user
+        user: req.body.user,
+        mode: req.body.mode
     });
     await creditCard.save();
     return res.status(200).end();
@@ -117,6 +137,34 @@ app.get('/getCreditCardUsedlist', async (req, res) => {
     // get auth and set id to relation record
     const userId = getId(req);
     let result = await CreditCardUse.find({ user: userId._id }).sort({ date: -1 });
+    return res.status(200).send(result).end();
+});
+
+app.get('/getcreditcarduse', async (req, res) => {
+    // get auth and set id to relation record
+    const userId = getId(req);
+    let result = await CreditCardUse.findOne({ date: req.query.date, user: userId._id });
+    return res.status(200).send(result).end();
+});
+
+app.get('/getcreditcardpay', async (req, res) => {
+    // get auth and set id to relation record
+    const userId = getId(req);
+    let result = await CreditCardPay.findOne({ date: req.query.date, user: userId._id });
+    return res.status(200).send(result).end();
+});
+
+app.delete('/deletecreditcardpay', async (req, res) => {
+    // get auth and set id to relation record
+    const userId = getId(req);
+    let result = await CreditCardPay.deleteOne({ date: req.query.date, user: userId._id });
+    return res.status(200).send(result).end();
+});
+
+app.delete('/deletecreditcarduse', async (req, res) => {
+    // get auth and set id to relation record
+    const userId = getId(req);
+    let result = await CreditCardUse.deleteOne({ date: req.query.date, amount: req.query.amount, user: userId._id });
     return res.status(200).send(result).end();
 });
 

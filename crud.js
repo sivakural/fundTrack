@@ -3,7 +3,7 @@ const { Router } = require("express");
 const app = Router();
 const { client } = require('./databaseConnector');
 const db = client.db("fundTrack");
-const { handleThings } = require('./utils');
+const { handleThings, formatDate } = require('./utils');
 const { handleCommon, getId } = require('./dbCommonMethods');
 
 app.post('/entry', async (req, res) => {
@@ -14,13 +14,13 @@ app.post('/entry', async (req, res) => {
     if (!userId) return res.status(401).send("Unauthorized...");
     inputs.user ? "" : inputs.user = userId._id;
 
-    let dbResult = await db.collection("entry").findOne({ date: inputs.date, user: inputs.user });
+    let dbResult = await db.collection("entry").findOne({ date: formatDate(inputs.date), user: inputs.user });
 
     // store result arrary into temp
     inputs = handleThings(dbResult, inputs);
 
     await db.collection("entry").updateOne(
-        { date: inputs.date, user: inputs.user },
+        { date: formatDate(inputs.date), user: inputs.user },
         {
             $set: inputs
         },
@@ -38,7 +38,7 @@ app.put('/update', async (req, res) => {
     inputs.user ? "" : inputs.user = userId._id;
 
     let result = await db.collection("entry").updateOne(
-        { date: inputs.date, user: inputs.user },
+        { date: formatDate(inputs.date), user: inputs.user },
         {
             $set: inputs
         }
@@ -54,8 +54,12 @@ app.get('/tracklist', async (req, res) => {
 });
 
 app.post('/getentry', async (req, res) => {
-    let input = req.body;
-    let result = await db.collection("entry").findOne(input);
+    // get auth and set id to relation record
+    const userId = getId(req);
+    if (!userId) return res.status(401).send("Unauthorized...");
+    let user = userId._id;
+
+    let result = await db.collection("entry").findOne({date: formatDate(req.body.date), user: user });
     console.log("get selected data....")
     res.status(200).send(result).end();
 });

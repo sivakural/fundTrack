@@ -11,6 +11,9 @@ const CreditCardPayModel = new mongoose.Schema({
     },
     user: {
         type: String
+    },
+    mode: {
+        type: String
     }
 });
 
@@ -25,15 +28,28 @@ const CreditCardUseModel = new mongoose.Schema({
     },
     user: {
         type: String
+    },
+    reason: {
+        type: String
     }
 });
 
-function validateCreditcard(entry) {
+function validateCreditcardPay(entry) {
     const schema = Joi.object({
         date: Joi.date().required(),
-        amount: Joi.number().required()
+        amount: Joi.number().required(),
+        mode: Joi.string().required()
     });
     return schema.validate(entry);
 }
 
-module.exports = { CreditCardPayModel, CreditCardUseModel, validateCreditcard }
+function validateCreditcardUse(entry) {
+    const schema = Joi.object({
+        date: Joi.date().required(),
+        amount: Joi.number().required(),
+        reason: Joi.string().required()
+    });
+    return schema.validate(entry);
+}
+
+module.exports = { CreditCardPayModel, CreditCardUseModel, validateCreditcardPay, validateCreditcardUse }

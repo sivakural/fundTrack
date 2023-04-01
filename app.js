@@ -13,13 +13,8 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(routerApp);
 app.use(authApp);
-app.use(express.static(process.cwd() + '/fund-track'));
 
 mongoConnect();
-
-app.get('/', (req, res) => {
-    res.sendFile(process.cwd() + '/fund-track/index.html');
-});
 
 app.listen(port, () => {
     console.log(`Server listening on ${port}`);

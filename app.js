@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 8080;
 const bodyParser = require("body-parser");
 const cors = require('cors');
+const { port } = require('./config');
 const routerApp = require('./crud');
 const authApp = require('./server');
 const { mongoConnect } = require('./databaseConnector');

@@ -3,17 +3,17 @@ const { Router } = require("express");
 const app = Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { userDBURL, creditCardDBURL } = require('./config');
 const { UserModel, validateUser, validateLoginUser } = require('./model/user');
 const { CreditCardPayModel, CreditCardUseModel, validateCreditcardPay, validateCreditcardUse } = require('./model/creditcard');
 const { getId } = require('./dbCommonMethods');
 
 // Database connections
-// const db1 = createConnection("mongodb+srv://siva:Mongodb%4025@cluster0.h6gvicl.mongodb.net/userEntry?retryWrites=true&w=majority");
-const db1 = createConnection(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.h6gvicl.mongodb.net/userEntry?retryWrites=true&w=majority`);
+const db1 = createConnection(userDBURL);
 const User = db1.model("User", UserModel);
-console.log('User database connected...')
-// const db2 = createConnection("mongodb+srv://siva:Mongodb%4025@cluster0.h6gvicl.mongodb.net/creditCard?retryWrites=true&w=majority");
-const db2 = createConnection(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.h6gvicl.mongodb.net/creditCard?retryWrites=true&w=majority`);
+console.log('User database connected...');
+
+const db2 = createConnection(creditCardDBURL);
 const CreditCardPay = db2.model("CreditCardPay", CreditCardPayModel);
 const CreditCardUse = db2.model("CreditCardUse", CreditCardUseModel);
 console.log('Creditcard database connected...');

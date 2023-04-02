@@ -2,7 +2,7 @@
 const { Router } = require("express");
 const app = Router();
 const { client } = require('./databaseConnector');
-const db = client.db("fundTrack");
+const db = client.db();
 const { handleThings, formatDate } = require('./utils');
 const { handleCommon, getId } = require('./dbCommonMethods');
 

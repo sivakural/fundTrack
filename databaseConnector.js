@@ -7,11 +7,12 @@ const mongoConnect = async function () {
         console.log("FundTrack database connected");
         // handle admin operations
         // const db = client.db();
-        // let result = await db.collection('entry').updateMany({
-        //     "things.subcategories.subcategorey": "Others",
+        // let result = await db.collection('entry').updateMany(
+        //     {
+        //     "things.subcategories.subcategorey": "Mobile Rechagrge",
         //     },
         //     {
-        //         $set: { "things.$.subcategories.$[].subcategorey": "Extras" }
+        //         $set: { "things.$.subcategories.$[].subcategorey": "Mobile Rechagrge" }
         //     });
         // console.log("result; ", result);
     } catch (error) {

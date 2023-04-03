@@ -53,13 +53,13 @@ app.get('/tracklist', async (req, res) => {
     res.status(200).send(result).end();
 });
 
-app.post('/getentry', async (req, res) => {
+app.get('/getentry', async (req, res) => {
     // get auth and set id to relation record
     const userId = getId(req);
     if (!userId) return res.status(401).send("Unauthorized...");
     let user = userId._id;
 
-    let result = await db.collection("entry").findOne({date: formatDate(req.body.date), user: user });
+    let result = await db.collection("entry").findOne({date: formatDate(req.query.date), user: user });
     console.log("get selected data....")
     res.status(200).send(result).end();
 });

@@ -29,7 +29,7 @@ app.post('/register', async (req, res) => {
     // Check if the user already exist
     let user = await User.findOne({ email: req.body.email });
     if (user) {
-        return res.status(400).send("That user already exists..");
+        return res.status(400).send("User already exists..");
     } else {
         user = new User({
             username: req.body.username,
@@ -47,7 +47,6 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         // First validate the req
-        console.log(req.body)
         const { error } = validateLoginUser(req.body);
         if (error) {
             return res.status(400).send(error.details[0].message);
@@ -63,7 +62,7 @@ app.post('/login', async (req, res) => {
                 return res.status(400).json('Password does not match..').end();
             }
         } else {
-            return res.status(400).json('User cannot exist..').end();
+            return res.status(400).json('User doesnot exist..').end();
         }
     } catch (error) {
         return res.status(400).json('Server error...').end();

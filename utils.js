@@ -61,15 +61,11 @@ function getWeek(month, y) {
     let setQueries = [];
     let days = new Date(year[y], month, 0).getDate();
     let month_temp = month;
-    if (month_temp <= 9) {
-        month_temp = "0" + month_temp;
-    }
+    if (month_temp <= 9) month_temp = "0" + month_temp;
 
     for (let i = 0; i < days; i++) {
         let day = i + 1;
-        if (day <= 9) {
-            day = "0" + day;
-        }
+        if (day <= 9) day = "0" + day;
         day = `${year[y]}-${month_temp}-${day}`;
         let date = new Date(day.toString());
         if (((i + 1) == 1) || (date.getDay() == 0)) {
@@ -94,19 +90,15 @@ function getMonth() {
     let date = { startDate: null, endDate: null };
     for (let j = 0; j < month.length; j++) {
         let month_temp = j + 1;
-        if (month_temp <= 9) {
-            month_temp = "0" + month_temp;
-        }
+        if (month_temp <= 9) month_temp = "0" + month_temp;
         let firstDay = "01";
         let month_current = new Date(year, month_temp, 0);
         let days = month_current.getDate();
         date.startDate = `${year}-${month_temp}-${firstDay}`;
         let today = new Date();
         if (today.getFullYear() == month_current.getFullYear() && today.getMonth() == month_current.getMonth()) {
-            let day = today.getDate();
-            if (day <= 9) {
-                day = "0" + days;
-            }
+            let day = today.getDate().toString();
+            if (day.length == 1) day = "0" + day;
             date.endDate = `${year}-${month_temp}-${day}`
             setQueries.push({ ...date });
             date.startDate = date.endDate = null;

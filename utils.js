@@ -30,7 +30,6 @@ function handleThings(dbResult, inputs) {
                             });
                             if (!isSubCategoreyExist) {
                                 dbRecord.subcategories.push(inputSubRecord);
-                                let tempData = [];
                                 if (!tempArray.some((val) => val.categorey == dbRecord.categorey)) {
                                     tempArray.push(dbRecord);
                                 }

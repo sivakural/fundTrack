@@ -1,6 +1,6 @@
-const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const cal = ["Day", "Week", "Month", "Year"];
 const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const year = ["2023", "2024", "2025"];
+const year = [2021, 2022, 2023];
 
 function handleThings(dbResult, inputs) {
     // store result arrary into temp
@@ -24,8 +24,27 @@ function handleThings(dbResult, inputs) {
                             let isSubCategoreyExist = false;
                             dbRecord.subcategories.forEach((dbSubRecord, dbSubIndex) => {
                                 if (inputSubRecord.subcategorey == dbSubRecord.subcategorey) {
-                                    isSubCategoreyExist = true;
-                                    dbSubRecord.subcategorey_value += inputSubRecord.subcategorey_value;
+                                    if (inputSubRecord.to) {
+                                        inputSubRecord.to.forEach((sep) => {
+                                            let istopersionExist = false;
+                                            if (dbSubRecord.to) {
+                                                dbSubRecord.to.forEach((dbSep) => {
+                                                    if (sep.person == dbSep.person) {
+                                                        istopersionExist = true;
+                                                        dbSep.amount += sep.amount;
+                                                    }
+                                                });
+                                                if (!istopersionExist) {
+                                                    dbSubRecord.to.push(sep);
+                                                } 
+                                            } else {
+                                                dbSubRecord.to == inputSubRecord.to;
+                                            }
+                                        })
+                                    } else {
+                                        isSubCategoreyExist = true;
+                                        dbSubRecord.subcategorey_value += inputSubRecord.subcategorey_value;
+                                    }
                                 }
                             });
                             if (!isSubCategoreyExist) {
@@ -83,9 +102,9 @@ function getWeek(month, y) {
     return setQueries;
 }
 
-function getMonth() {
+function getMonth(y) {
     let setQueries = [];
-    let year = "2023";
+    let year = y;
     let date = { startDate: null, endDate: null };
     for (let j = 0; j < month.length; j++) {
         let month_temp = j + 1;
@@ -112,14 +131,13 @@ function getMonth() {
 
 function getYear() {
     let setQueries = [];
-    let yr = year[0];
-    // year.forEach(val => {
+    year.forEach(val => {
         let data = { startDate: null, endDate: null };
-        data.startDate = `${yr}-01-${new Date(yr, '01', 1).getDate()}`;
-        data.endDate = `${yr}-12-${new Date(yr, '12', 0).getDate()}`;
+        data.startDate = `${val}-01-${new Date(val, '01', 1).getDate()}`;
+        data.endDate = `${val}-12-${new Date(val, '12', 0).getDate()}`;
         setQueries.push({ ...data });
         data = { startDate: null, endDate: null };
-    // });
+    });
     return setQueries;
 }
 

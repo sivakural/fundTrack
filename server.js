@@ -163,7 +163,7 @@ app.delete('/deletecreditcardpay', async (req, res) => {
 app.delete('/deletecreditcarduse', async (req, res) => {
     // get auth and set id to relation record
     const userId = getId(req);
-    let result = await CreditCardUse.deleteOne({ date: req.query.date, amount: req.query.amount, user: userId._id });
+    let result = await CreditCardUse.deleteOne({ date: req.query.date, user: userId._id });
     return res.status(200).send(result).end();
 });
 

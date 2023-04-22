@@ -6,6 +6,7 @@ const { port } = require('./config');
 const routerApp = require('./crud');
 const authApp = require('./server');
 const { mongoConnect } = require('./databaseConnector');
+const loanapp = require('./loans/router.js');
 
 app.use(cors({
     origin: '*'
@@ -13,6 +14,7 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(routerApp);
 app.use(authApp);
+app.use(loanapp);
 
 mongoConnect();
 

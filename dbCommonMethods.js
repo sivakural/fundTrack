@@ -15,7 +15,7 @@ async function handleCommon(req) {
             getQuries = [];
             break;
         case "month":
-            getQuries = getMonth();
+            getQuries = getMonth(query.year);
             await handleDataFlow(getQuries, result, req);
             getQuries = [];
             break;
@@ -50,6 +50,9 @@ async function handleCommon(req) {
                         },
                         month: {
                             $month: "$convertDate"
+                        },
+                        year: {
+                            $year: "$convertDate"
                         }
                     }
                 },
@@ -57,6 +60,7 @@ async function handleCommon(req) {
                     $match: {
                         $and: [
                             { month: parseInt(query.month) },
+                            { year: parseInt(query.year) },
                             { user: userId._id }
                         ]
                     }
